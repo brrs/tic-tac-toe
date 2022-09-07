@@ -2,21 +2,21 @@ const states = { X: 'X' ,  O: 'O', EMPTY: ""}
 
 function createTicTacToe(onWin, onDraw)  {
     return {
-        grid: [ 
+        grid: [
             [states.EMPTY, states.EMPTY, states.EMPTY],
-            [states.EMPTY, states.EMPTY, states.EMPTY], 
-            [states.EMPTY, states.EMPTY, states.EMPTY] 
+            [states.EMPTY, states.EMPTY, states.EMPTY],
+            [states.EMPTY, states.EMPTY, states.EMPTY]
         ],
         turn: states.X,
         turnCount: 0,
-        winner: "",
+        winner: states.EMPTY,
         makeTurn: function(x, y, updateView, onWrongCell) {
             // check if the game is finished and coords is ok
-            if (this.winner !== "") return
+            if (this.winner !== states.EMPTY) return
             if (x > 3 || x < 0 || y > 3 || y < 0)  {
                 console.log("Wrong coordinates")
                 return
-            }   
+            }
 
             // check if the cell is already taken
             if (this.grid[x][y] == states.EMPTY) {
@@ -37,7 +37,7 @@ function createTicTacToe(onWin, onDraw)  {
                 }
                 
                 // prepare for next turn
-                if (this.turn == states.X) this.turn = states.O; else this.turn = states.X
+                this.turn = this.turn == states.X ? states.O : states.X
                 this.turnCount++
             } else {
                 onWrongCell()
@@ -84,22 +84,22 @@ function check(x, y, turn, state) {
 
 const caption = document.getElementById("caption")
 let ttt = createTicTacToe(
-    function(state) {
+    (state) => {
         caption.textContent = state + " won"
     },
-    function() {
+    () => {
         caption.textContent = "Draw"
     }
 )
 
 // setting listeners
 const board = document.getElementById("board").children
-for (let i = 0; i < board.length; i++) {    
-    const item = document.getElementById(board[i].id)
+for (let element of board) {
+    const item = document.getElementById(element.id)
     const x  = item.id[0]
     const y  = item.id[1]
-    item.addEventListener("click", function() {
-        ttt.makeTurn(x, y, function(turn) {
+    item.addEventListener("click", () => {
+        ttt.makeTurn(x, y, (turn) => {
             console.log("update")
             let element = document.createElement('img');
             let img;
@@ -107,15 +107,15 @@ for (let i = 0; i < board.length; i++) {
             element.src = img
             element.classList.add("pin")
             item.appendChild(element)
-        }, function(){
+        }, () => {
             item.classList.add("err")
-            setTimeout(function(){
+            setTimeout(() => {
                 item.classList.remove("err")
                 }, 500)
         })
     })
 }
 
-document.getElementById("button_refresh").addEventListener('click', function() {
+document.getElementById("button_refresh").addEventListener('click', () => {
     location.reload()
 })
