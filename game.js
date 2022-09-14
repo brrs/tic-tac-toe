@@ -7,7 +7,7 @@ class Game extends HTMLElement {
         this.turnCount = 0
         this.winner = states.EMPTY
         this.board = this.getEmptyBoard()
-        this.initHtml(document.body)
+        this.initHtml(document.getElementById('game-view'))
     }
 
     initHtml(parent) {
