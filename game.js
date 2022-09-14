@@ -1,12 +1,13 @@
 const states = { X: 'X', O: 'O', EMPTY: "" }
 
-class Game {
-    constructor(parent) {
+class Game extends HTMLElement {
+    constructor() {
+        super()
         this.turn = states.X
         this.turnCount = 0
         this.winner = states.EMPTY
         this.board = this.getEmptyBoard()
-        this.initHtml(parent)
+        this.initHtml(document.body)
     }
 
     initHtml(parent) {
@@ -28,6 +29,17 @@ class Game {
         caption.id = 'caption'
         parent.appendChild(caption)
         this.caption = caption
+
+        const button = document.createElement('div')
+        button.classList.add('button')
+        button.id = 'button_refresh'
+        button.addEventListener('click', () => { this.reset() })
+        const buttonCaption = document.createElement('span')
+        buttonCaption.classList.add('button_text')
+        buttonCaption.textContent = 'Refresh'
+        button.appendChild(buttonCaption)
+        parent.appendChild(button)
+        this.button = button
     }
 
     getEmptyBoard() {
@@ -80,13 +92,13 @@ class Game {
     }
 
     onWrongCell(cell) {
-        this.grid.children[cell].classList.add("err").setTimeout(() => { element.classList.remove("err") }, 500)
+        this.grid.children[cell].classList.add("err")
+        setTimeout(() => { this.grid.children[cell].classList.remove("err") }, 500)
     }
 
     onBoardChange(cell) {
-        let child = document.createElement('img');
-        let img;
-        if (game.turn == states.X) img = "x.png"; else img = "o.png"
+        const child = document.createElement('img');
+        const img = this.turn == states.X ? "x.png" : "o.png"
         child.src = img
         child.classList.add("pin")
         this.grid.children[cell].appendChild(child)
@@ -112,9 +124,9 @@ class Game {
     }
 
     check(p1, p2, p3) {
-        let c1 = this.board[p1]
-        let c2 = this.board[p2]
-        let c3 = this.board[p3]
+        const c1 = this.board[p1]
+        const c2 = this.board[p2]
+        const c3 = this.board[p3]
 
         if (c1 == states.EMPTY || c2 == states.EMPTY || c3 == states.EMPTY) return false
         if (c1 == c2 && c2 == c3) return true
